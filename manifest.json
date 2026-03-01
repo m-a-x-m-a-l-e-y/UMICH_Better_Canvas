@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Umich-Happenings",
+  "version": "1.0",
+  "permissions": ["storage"],
+  "host_permissions": [
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://umich.instructure.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
