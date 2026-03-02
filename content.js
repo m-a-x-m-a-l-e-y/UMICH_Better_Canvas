@@ -12,11 +12,14 @@ console.log(data)
 function fetch_request(){
     chrome.runtime.sendMessage(("maize pages data request"), (response) => 
     {
-        if(response.success){
-            console.log("Successfully got event data ")
-            return response.hmtl
-            
-
+        if(response && response.success){
+            console.log("Successfully got event data lalalalal")
+            console.log(response.json)
+        }
+        else{
+            console.log("Something went wrong")
         }
     })
 }
+
+fetch_request()

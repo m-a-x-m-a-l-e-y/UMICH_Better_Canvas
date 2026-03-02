@@ -1,10 +1,3 @@
-
-// Checking if we are in the canvas page
-// chrome.tabs.onUpdated.addListener((tabId, tab) => {
-//     if(tab.url && tab.url.includes("umich.instructure.com")){
-        
-//     }
-// });
 function main() {
     
 }
@@ -29,14 +22,6 @@ async function scrape_events() {
     return events_list;
 
 }
-
-function generate_URL() {
-    today_exact = new Date().toISOString();
-    // 2026-02-28T23:31:09.063Z
-    today_usable = today_exact.substring(0, 10)
-    return skeleton = `https://maizepages.umich.edu/api/discovery/event/search?endsAfter=${today_usable}T18%3A10%3A56-05%3A00&orderByField=endsOn&orderByDirection=ascending&status=Approved&take=15&query=`
-}
-
 async function fetchEvents(url) {
     //fetching generated URL
     try {
@@ -53,13 +38,45 @@ async function fetchEvents(url) {
         return [];
     }
 }
-
-
-//responding to Max's call:
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if(message == "maize pages data request") {
-        console.log("data request received pardner")
-    }
-    return true;
+function generate_URL() {
+    today_exact = new Date().toISOString();
+    // 2026-02-28T23:31:09.063Z
+    today_usable = today_exact.substring(0, 10)
+    return skeleton = `https://maizepages.umich.edu/api/discovery/event/search?endsAfter=${today_usable}T18%3A10%3A56-05%3A00&orderByField=endsOn&orderByDirection=ascending&status=Approved&take=15&query=`
 }
-);
+
+
+
+
+// Listener for message from content.js
+const MESSAGE_OUT = "maize pages data request"
+chrome.runtime.onMessage.addListener((message, sender, sendResponse)=> {
+    if(message === MESSAGE_OUT){
+        url = generate_URL()
+        fetch(url)
+        .then((response) => response.json())
+        .then(data => {
+            sendResponse({success:true, json:data})
+        })
+        .catch(error => {sendResponse({success : false , error: "ERROR : reached catch" + error})})
+    }
+    return true
+})
+
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     if (message === MESSAGE_OUT) {
+//         const url = generate_URL();
+        
+//         fetch(url)
+//             .then(response => response.json()) // Added () and fixed spelling
+//             .then(data => {
+//                 sendResponse({ success: true, json: data });
+//             })
+//             .catch(error => {
+//                 sendResponse({ success: false, error: error.toString() });
+//             });
+        
+//         return true; // <--- CRITICAL: Keeps the channel open for the async fetch
+//     }
+
+// });
