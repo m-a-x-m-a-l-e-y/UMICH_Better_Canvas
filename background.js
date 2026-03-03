@@ -62,21 +62,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse)=> {
     }
     return true
 })
-
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//     if (message === MESSAGE_OUT) {
-//         const url = generate_URL();
-        
-//         fetch(url)
-//             .then(response => response.json()) // Added () and fixed spelling
-//             .then(data => {
-//                 sendResponse({ success: true, json: data });
-//             })
-//             .catch(error => {
-//                 sendResponse({ success: false, error: error.toString() });
-//             });
-        
-//         return true; // <--- CRITICAL: Keeps the channel open for the async fetch
-//     }
-
-// });

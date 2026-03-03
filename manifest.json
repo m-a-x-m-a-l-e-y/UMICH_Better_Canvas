@@ -13,6 +13,10 @@
     {
       "matches": ["https://umich.instructure.com/*"],
       "js": ["content.js"]
+    },
+    {
+      "matches": ["https://umich.instructure.com/*"],
+      "js": ["eventClass.js"]
     }
   ]
 }
