@@ -4,19 +4,28 @@
   "version": "1.0",
   "permissions": ["storage"],
   "host_permissions": [
-    "https://maizepages.umich.edu/*"
+    "https://maizepages.umich.edu/",
+    "https://umich.instructure.com/"
   ],
   "background": {
     "service_worker": "background.js"
   },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Click to open popup"
+  },
   "content_scripts": [
     {
-      "matches": ["https://umich.instructure.com/*"],
+      "matches": ["https://umich.instructure.com/"],
       "js": ["content.js"]
     },
     {
       "matches": ["https://umich.instructure.com/*"],
       "js": ["eventClass.js"]
+    },
+    {
+      "matches": ["https://umich.instructure.com/*"],
+      "js": ["options.js"]
     }
   ]
 }
