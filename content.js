@@ -25,25 +25,40 @@ function fetch_request(){
 
 }
 
+function sort_events(rawEventsArray){
+    rawEventsArray.sort((a, b) => a.time - b.time);
+    console.log(rawEventsArray);
+    return rawEventsArray;
+}
+
 function parse(json_info){
+    // turns json object into a sorted list of events
     console.log("AAAAAAAAA")
     console.log(json_info)
     const AMOUNT_EVENTS_AVAILABLE = 15;
     let eventArray = [];
+
+    //add events found to array, filtering out ones that have already passed
+    const now = new Date();
     for(i = 0; i < AMOUNT_EVENTS_AVAILABLE; i++) {
-        console.log('i :'  + i )
-        _event = new Event(
-            json_info.value[i].name,
-            json_info.value[i].organizationName,
-            json_info.value[i].id,
-            json_info.value[i].startsOn,
-            json_info.value[i].location
-        );
-        eventArray.push(_event);
+        const eventDate = new Date(json_info.value[i].startsOn)
+        if(eventDate >= now) {
+            console.log('i :'  + i )
+            _event = new Event(
+                json_info.value[i].name,
+                json_info.value[i].organizationName,
+                json_info.value[i].id,
+                json_info.value[i].startsOn,
+                json_info.value[i].location
+            );
+            eventArray.push(_event);
+        }
     }
-    return eventArray
 
-
+    //sort eventArray by date
+    eventArray.sort((a, b) => new Date(a.time) - new Date(b.time));
+    console.log(eventArray);
+    return eventArray;
 }
 
 function addElems(list_of_events) {
@@ -54,11 +69,11 @@ function addElems(list_of_events) {
         row_1 = "AAAA";
       
 
-        html_insert = `<div id = "inserted"> ew content
+        html_insert = `<div id = "inserted">  
                 <table style="border-collapse: collapse; border: none;">
                     <tr>
                         <td>${row_1}</td>
-                        <td>Row 1, Col 2</td>
+                        <td>${row_1}</td>
                     </tr>
                     <tr>
                         <td>Row 2, Col 1</td>
@@ -89,18 +104,33 @@ function addElems(list_of_events) {
         targetDiv.style.alignItems = 'flex-start';
         targetDiv.style.backgroundColor = 'red';
         targetDiv.style.padding = '20px';
+        targetDiv.style.height = '200px'
+
     //
 
     // Our Extension's Div Styles
         let happening_div = document.querySelector('#content > div > div')
         happening_div.style.display = 'flex';
-        happening_div.style.backgroundColor = 'green';
+        happening_div.style.padding = '10px';
+        happening_div.style.backgroundColor = 'white';
         happening_div.style.width = '400px';
-        happening_div.style.height = 'auto';
-        
-        happening_div.style.margin = '10px';
+        happening_div.style.height = '175px';
+        happening_div.style.marginLeft = '75px';
         happening_div.style.alignItems = 'center';
+        happening_div.style.justiftContent = 'center';
+        happening_div.style.border = '1px solid grey';
+        happening_div.style.borderRadius = '10px';
+
+        
     //
+    console.log(happening_div)
+    table= happening_div.querySelector('table')
+    table.style.backgroundColor = 'yellow'
+    table.style.height = '100px'
+
+    rows = table.querySelectorAll('tr')
+    rows.style.height = '15px'
+    rows.style.fontFamily = '10px'
 }
 
 async function run(){
