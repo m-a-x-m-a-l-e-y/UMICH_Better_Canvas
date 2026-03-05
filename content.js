@@ -26,13 +26,17 @@ function fetch_request(){
             resolve(response.json)
         }
         else{
-            console.log("Something went wrong" + response.error)
+            console.log("Something went wrong" + response?.error)
             reject(response?.error)
         }
     })
     })
 }
 function sort_events(rawEventsArray){
+    // Sorts by time which is fine to sort by string because month # is the first differentiator
+    //
+    // | NOTE : This sorts by strings but does so correctly because year [represented as numbers] comes before
+    //  months, which allows us to sort purely by string value |
     rawEventsArray.sort((a, b) => a.time - b.time);
     console.log(rawEventsArray);
     return rawEventsArray;
@@ -55,7 +59,8 @@ function parse(json_info){
                 json_info.value[i].organizationName,
                 json_info.value[i].id,
                 json_info.value[i].startsOn,
-                json_info.value[i].location
+                json_info.value[i].location,
+                `https://maizepages.umich.edu/event/${json_info.value[i].id}`
             );
             eventArray.push(_event);
         }
@@ -122,30 +127,58 @@ function addElems(list_of_events) {
 function format_date(time_in){
     return time_in.slice(0,10)
 }
-function format_time(time_in){
-    let prefix = 'am'
-    if(Number(time_in.slice(11,13)) > 11){
-        prefix = 'pm'
-    }
 
-    let hour = Number(time_in.slice(11,13))%12 
+function format_time(time_in){
+    //so this actually gives time based on current location so will only work properly in EST places oops
+    //uses date of event to find offset, accounts for daylight savings
+    const dateOfEvent = new Date(time_in);
+    const diff = dateOfEvent.getTimezoneOffset() / 60;
+
+    let prefix = 'am'
+    //the hour in UTC time
+    let UTC_hour = Number(time_in.slice(11, 13))
+    //hour converted to local time
+    let convertedHour = UTC_hour - diff;
+    
+    // if the time is negative, add 24 hours to the time
+    // in order to produce the equivalent time 
+    // in the previous day (ex: -4:00 = 20:00 = 8:00pm)
+        if(convertedHour < 0) {
+            convertedHour += 24;
+        }
+        if(convertedHour >=24) {
+            convertedHour -= 24;
+        }
+        //converts to pm if necessary
+        if(convertedHour >= 12) {
+            prefix = 'pm';
+        }
+
+    //hour is what is displayed on the events thing
+    let hour = convertedHour % 12
+    if(hour == 0) {
+        hour = 12
+    }
+    
+    //minutes is diplated on the page
     let minutes = Number(time_in.slice(14,16))
+    // 
     // This logic ensures that there are 2 digits in the minutes place
     if(minutes.toString().length == 1){
         let zero = "0"
         zero += minutes
         minutes = zero
     }
+    //compiles time to display
     let time = hour + ":" + minutes + " " + prefix
     return time
 }
+
 function addElems_gemini(list_of_events) {
     console.log("INSERTING EVENTS WIDGET");
 
     let targetDiv = document.querySelector('#content > div');
     
-    // 1. Generate the HTML dynamically based on the 5 events
-    // We slice(0, 5) just to ensure we strictly only show 5 rows max
     const eventsHtml = list_of_events.slice(0, 15).map(event => `
         <div class="umich-event-row">
             <div>
@@ -163,10 +196,9 @@ function addElems_gemini(list_of_events) {
         </div>
     `).join('');
 
-    // 2. Wrap it in a nice container with a header
     const widgetHtml = `
         <div id="umich-widget-container">
-            <div class="umich-widget-header">HAPPENING TODAY</div>
+            <div class="umich-widget-header">HAPPENING @ UMICH</div>
             <div class="umich-events-list">
                 ${eventsHtml}
             </div>
@@ -178,8 +210,7 @@ function addElems_gemini(list_of_events) {
         //     align-items: flex-start;
         //     gap: 20px; /* Space between original content and your widget */
         // }
-    // 3. Inject CSS styles into the document head
-    // This is MUCH cleaner than writing targetDiv.style.backgroundColor over and over
+
     const style = document.createElement('style');
     style.innerHTML = `
         /* Container styling to sit nicely next to the carousel */
@@ -190,14 +221,14 @@ function addElems_gemini(list_of_events) {
             width: 400px;
             background-color: #ffffff;
             border: 1px solid #e0e0e0;
-            border: none;
+            // border: none;
             border-radius: 8px;
             // box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             box-shadow: none;
             font-family: 'Roboto', sans-serif;
             overflow: hidden; /* Keeps border-radius clean */
             flex-shrink: 0;
-            margin-left: 20px;
+            margin-left: 0px;
         }
 
         /* UMich Blue Header */     
@@ -280,10 +311,15 @@ function addElems_gemini(list_of_events) {
     targetDiv.style.flexDirection = 'row';
     targetDiv.style.alignItems = 'flex-start';
     targetDiv.style.backgroundColor = 'white';
-    targetDiv.style.padding = '20px';
+    targetDiv.style.padding = '0px';
     targetDiv.style.height = '200px'
     targetDiv.insertAdjacentHTML('beforeend', widgetHtml);
 }
+function remove_ads(){
+    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    adbox.remove()
+}
+
 
 function happening_today(){
     return true
@@ -293,6 +329,12 @@ function no_ads(){
 }
 async function run(){
     
+    today_UTC = new Date();
+    offset = today_UTC.getTimezoneOffset() * 60 * 1000;
+    estDate = new Date(today_UTC.getTime() - offset);
+    today_usable = estDate.toISOString().substring(0,10);
+    console.log(today_usable);
+
     add_libraries()
     if(HAPPENING_TODAY_OPTION){
         const info_json = await fetch_request()
@@ -301,6 +343,7 @@ async function run(){
     }
     if(NO_ADS_OPTION){
         console.log("removing ads")
+        remove_ads()
     }
 }
 
