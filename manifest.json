@@ -17,15 +17,7 @@
   "content_scripts": [
     {
       "matches": ["https://umich.instructure.com/"],
-      "js": ["content.js"]
-    },
-    {
-      "matches": ["https://umich.instructure.com/*"],
-      "js": ["eventClass.js"]
-    },
-    {
-      "matches": ["https://umich.instructure.com/*"],
-      "js": ["options.js"]
+      "js": ["eventClass.js", "content.js", "options.js"]
     }
   ]
 }

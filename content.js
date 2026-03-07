@@ -59,9 +59,12 @@ function parse(json_info){
                 json_info.value[i].organizationName,
                 json_info.value[i].id,
                 json_info.value[i].startsOn,
+                json_info.value[i].endsOn,
                 json_info.value[i].location,
                 `https://maizepages.umich.edu/event/${json_info.value[i].id}`
             );
+            //console.log('gcal link:')
+            //console.log(_event.gcal);
             eventArray.push(_event);
         }
     }
@@ -190,6 +193,12 @@ function addElems_gemini(list_of_events) {
             <div class="umich-details">
                 <div class="umich-title"><a href = "${event.link}">${event.name || "Unknown Event"}</a></div>
                 <div class="umich-loc">${event.location || "Location TBD"} • ${event.orgName}</div>
+            </div>
+
+            <div class="umich-gcal-col">
+                <a href="${event.gcal}" target="_blank" class="umich-gcal-btn" title="Add to Google Calendar">
+                    <span>+</span>
+                </a>
             </div>
 
             
