@@ -332,99 +332,65 @@ function addElems_gemini(list_of_events) {
 
 function remove_elems(){
     elems = document.querySelector("#umich-widget-container")
+    container = document.querySelector('#content > div:not(#dashboard)')
+    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+
     if (elems) {
         elems.style.display = 'none'; // Just hide it
         console.log("elems hidden");
     }
-    // container = document.querySelector('#content > div:not(#dashboard)')
-    // if (container) {
-    //     container.style.display = 'none'; // Just hide it
-    //     console.log("Ads hidden");
-    // }
+
+    if(adbox.style.display === 'none'){
+        container.style.display = 'none'
+    }
 }
 
 function show_elems(){
     elems = document.querySelector("#umich-widget-container")
+    container = document.querySelector('#content > div:not(#dashboard)')
+
+    if(container.style.display === 'none'){
+            container.style.display = 'flex'
+        }
     if (elems) {
         elems.style.display = 'flex'; // Just hide it
         console.log("elems hidden");
     }
-    // container = document.querySelector('#content > div:not(#dashboard)')
-    // if (container) {
-    //     container.style.display = 'flex'; // Just hide it
-    //     console.log("Ads hidden");
-    // }
+    
+    
 }
-
 
 function remove_ads(){
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    container = document.querySelector('#content > div:not(#dashboard)')
+    elems = document.querySelector("#umich-widget-container")
     if (adbox) {
         adbox.style.display = 'none'; // Just hide it
         console.log("Ads hidden");
     }
-    // container = document.querySelector('#content > div:not(#dashboard)')
-    // if (container) {
-    //     container.style.display = 'none'; // Just hide it
-    //     console.log("Ads hidden");
-    // }
+    
+    if(elems.style.display === 'none'){
+        container.style.display = 'none'
+    }
 
 
 }
 function place_ads(){
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    container = document.querySelector('#content > div:not(#dashboard)')
+    if(container.style.display === 'none'){
+            container.style.display = 'flex'
+        }
+
     if (adbox) {
         adbox.style.display = 'block';
         console.log("Ads hidden");
     }
-    // container = document.querySelector('#content > div:not(#dashboard)')
-    // if (container) {
-    //     container.style.display = 'flex';
-    //     console.log("Ads hidden");
-    // }
-}
-
-
-
-function happening_today(){
-    return true
-}
-function no_ads(){
-    return true
+    
+    
 }
 
 async function get_settings(){
-    // let happening;
-    // let no_ads;
-    // console.log("Lebron")
-    // return new Promise((resolve, reject) =>{
-    //     chrome.storage.local.get(["toggle_happening_setting", "toggle_off_ads_setting"]).then((result)=>{
-    //         if(result.toggle_happening_setting !== undefined){
-    //             happening = result.toggle_happening_setting
-    //         }
-    //         if(result.toggle_off_ads_setting !== undefined){
-    //             no_ads = result.toggle_off_ads_setting
-    //         }
-    //         if(!no_ads){
-    //             no_ads = true;
-    //         }
-    //         if(!happening){
-    //             happening = true;
-    //         }
-    //         console.log("GOTGOTGOT")
-    //         console.log(happening + "" + no_ads)
-
-    //         resolve({happening_option: happening, no_ads_option: no_ads})
-    //     }).catch(() => {
-    //         console.log("ERROR IN LOCAL STORAGE")
-            
-    //         reject({happening_option: true, no_ads_option: true })
-
-    //     })
-    // })
-    // return {happening, no_ads}
-    //
-
     try {
         // Must match the .sync call in the popup
         const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
