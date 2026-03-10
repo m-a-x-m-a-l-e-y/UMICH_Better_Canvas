@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Umich-Happenings",
   "version": "1.0",
-  "permissions": ["storage"],
+  "permissions": ["storage","tabs","activeTab"],
   "host_permissions": [
     "https://maizepages.umich.edu/",
     "https://umich.instructure.com/"

@@ -74,59 +74,59 @@ function parse(json_info){
     console.log(eventArray);
     return eventArray;
 }
-function addElems(list_of_events) {
-    console.log("INSERTINGGGGG")
+// function addElems(list_of_events) {
+//     console.log("INSERTINGGGGG")
 
-    // Adds each event to extension div next to the top images carousel
-        inner_events_html = ''
-        for (_event in list_of_events){
+//     // Adds each event to extension div next to the top images carousel
+//         inner_events_html = ''
+//         for (_event in list_of_events){
             
 
-            events += `<div class = event_and_time>
-                            <div class = "time"> $</div>
-                            <div class = "event" ></div>
-                       </div>`;
-        }
+//             events += `<div class = event_and_time>
+//                             <div class = "time"> $</div>
+//                             <div class = "event" ></div>
+//                        </div>`;
+//         }
 
 
 
-        targetDiv.insertAdjacentHTML('beforeend', html_insert);
-    //
+//         targetDiv.insertAdjacentHTML('beforeend', html_insert);
+//     //
 
-    // Container Styles 
-        targetDiv.style.display = 'flex';
-        targetDiv.style.flexDirection = 'row';
-        targetDiv.style.alignItems = 'flex-start';
-        targetDiv.style.backgroundColor = 'red';
-        targetDiv.style.padding = '20px';
-        targetDiv.style.height = '200px'
+//     // Container Styles 
+//         targetDiv.style.display = 'flex';
+//         targetDiv.style.flexDirection = 'row';
+//         targetDiv.style.alignItems = 'flex-start';
+//         targetDiv.style.backgroundColor = 'red';
+//         targetDiv.style.padding = '20px';
+//         targetDiv.style.height = '200px'
 
-    //
+//     //
 
-    // Our Extension's Div Styles
-        let happening_div = document.querySelector('#content > div > div')
-        happening_div.style.display = 'flex';
-        happening_div.style.padding = '10px';
-        happening_div.style.backgroundColor = 'white';
-        happening_div.style.width = '400px';
-        happening_div.style.height = '175px';
-        happening_div.style.marginLeft = '75px';
-        happening_div.style.alignItems = 'center';
-        happening_div.style.justiftContent = 'center';
-        happening_div.style.border = '1px solid grey';
-        happening_div.style.borderRadius = '10px';
+//     // Our Extension's Div Styles
+//         let happening_div = document.querySelector('#content > div > div')
+//         happening_div.style.display = 'flex';
+//         happening_div.style.padding = '10px';
+//         happening_div.style.backgroundColor = 'white';
+//         happening_div.style.width = '400px';
+//         happening_div.style.height = '175px';
+//         happening_div.style.marginLeft = '75px';
+//         happening_div.style.alignItems = 'center';
+//         happening_div.style.justiftContent = 'center';
+//         happening_div.style.border = '1px solid grey';
+//         happening_div.style.borderRadius = '10px';
 
         
-    //
-    console.log(happening_div)
-    table= happening_div.querySelector('table')
-    table.style.backgroundColor = 'yellow'
-    table.style.height = '100px'
+//     //
+//     console.log(happening_div)
+//     table= happening_div.querySelector('table')
+//     table.style.backgroundColor = 'yellow'
+//     table.style.height = '100px'
 
-    rows = table.querySelectorAll('tr')
-    rows.style.height = '15px'
-    rows.style.fontFamily = '10px'
-}
+//     rows = table.querySelectorAll('tr')
+//     rows.style.height = '15px'
+//     rows.style.fontFamily = '10px'
+// }
 function format_date(time_in){
     return time_in.slice(0,10)
 }
@@ -167,7 +167,7 @@ function format_time(time_in){
     let minutes = Number(time_in.slice(14,16))
     // 
     // This logic ensures that there are 2 digits in the minutes place
-    if(minutes.toString().length == 1){
+    if(minutes.toString().length === 1){
         let zero = "0"
         zero += minutes
         minutes = zero
@@ -237,7 +237,7 @@ function addElems_gemini(list_of_events) {
             font-family: 'Roboto', sans-serif;
             overflow: hidden; /* Keeps border-radius clean */
             flex-shrink: 0;
-            margin-left: 0px;
+            margin-left: 5px;
         }
 
         /* UMich Blue Header */     
@@ -313,6 +313,11 @@ function addElems_gemini(list_of_events) {
             color: #666666;
             line-height: 1.3;
         }
+
+        .umich-gcal-btn{
+            margin:4px;
+            text-decoration : none;
+        }
     `;
     
     document.head.appendChild(style);
@@ -324,10 +329,61 @@ function addElems_gemini(list_of_events) {
     targetDiv.style.height = '200px'
     targetDiv.insertAdjacentHTML('beforeend', widgetHtml);
 }
+
+function remove_elems(){
+    elems = document.querySelector("#umich-widget-container")
+    if (elems) {
+        elems.style.display = 'none'; // Just hide it
+        console.log("elems hidden");
+    }
+    // container = document.querySelector('#content > div:not(#dashboard)')
+    // if (container) {
+    //     container.style.display = 'none'; // Just hide it
+    //     console.log("Ads hidden");
+    // }
+}
+
+function show_elems(){
+    elems = document.querySelector("#umich-widget-container")
+    if (elems) {
+        elems.style.display = 'flex'; // Just hide it
+        console.log("elems hidden");
+    }
+    // container = document.querySelector('#content > div:not(#dashboard)')
+    // if (container) {
+    //     container.style.display = 'flex'; // Just hide it
+    //     console.log("Ads hidden");
+    // }
+}
+
+
 function remove_ads(){
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    adbox.remove()
+    if (adbox) {
+        adbox.style.display = 'none'; // Just hide it
+        console.log("Ads hidden");
+    }
+    // container = document.querySelector('#content > div:not(#dashboard)')
+    // if (container) {
+    //     container.style.display = 'none'; // Just hide it
+    //     console.log("Ads hidden");
+    // }
+
+
 }
+function place_ads(){
+    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    if (adbox) {
+        adbox.style.display = 'block';
+        console.log("Ads hidden");
+    }
+    // container = document.querySelector('#content > div:not(#dashboard)')
+    // if (container) {
+    //     container.style.display = 'flex';
+    //     console.log("Ads hidden");
+    // }
+}
+
 
 
 function happening_today(){
@@ -336,30 +392,121 @@ function happening_today(){
 function no_ads(){
     return true
 }
+
+async function get_settings(){
+    // let happening;
+    // let no_ads;
+    // console.log("Lebron")
+    // return new Promise((resolve, reject) =>{
+    //     chrome.storage.local.get(["toggle_happening_setting", "toggle_off_ads_setting"]).then((result)=>{
+    //         if(result.toggle_happening_setting !== undefined){
+    //             happening = result.toggle_happening_setting
+    //         }
+    //         if(result.toggle_off_ads_setting !== undefined){
+    //             no_ads = result.toggle_off_ads_setting
+    //         }
+    //         if(!no_ads){
+    //             no_ads = true;
+    //         }
+    //         if(!happening){
+    //             happening = true;
+    //         }
+    //         console.log("GOTGOTGOT")
+    //         console.log(happening + "" + no_ads)
+
+    //         resolve({happening_option: happening, no_ads_option: no_ads})
+    //     }).catch(() => {
+    //         console.log("ERROR IN LOCAL STORAGE")
+            
+    //         reject({happening_option: true, no_ads_option: true })
+
+    //     })
+    // })
+    // return {happening, no_ads}
+    //
+
+    try {
+        // Must match the .sync call in the popup
+        const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
+        
+        return {
+            happening_option: result.happening_toggle ,
+            no_ads_option: result.ads_off_toggle 
+        };
+    } catch (e) {
+        console.error("Cloud storage error:", e);
+        return { happening_option: true, no_ads_option: true };
+    }
+}
+
+
 async function run(){
-    
+    // time handling things
     today_UTC = new Date();
     offset = today_UTC.getTimezoneOffset() * 60 * 1000;
     estDate = new Date(today_UTC.getTime() - offset);
     today_usable = estDate.toISOString().substring(0,10);
     console.log(today_usable);
 
+    const { happening_option, no_ads_option } = await get_settings();
+    console.log(happening_option + "   " +  no_ads_option)
     add_libraries()
-    if(HAPPENING_TODAY_OPTION){
-        const info_json = await fetch_request()
-        events_list = parse(info_json)
-        addElems_gemini(events_list)
-    }
-    if(NO_ADS_OPTION){
+    const info_json = await fetch_request()
+    events_list = parse(info_json)
+    addElems_gemini(events_list)
+    
+    if(no_ads_option){
         console.log("removing ads")
         remove_ads()
+    }
+    if(!happening_option){
+        console.log("removing elements")
+        remove_elems()
     }
 }
 
 
 
-const HAPPENING_TODAY_OPTION = happening_today();
-const NO_ADS_OPTION = no_ads();
+
+chrome.runtime.onMessage.addListener((result)=>{
+
+    const {message: message_in, status: status_in} = result
+
+    try{
+        if(message_in === "happening_toggle"){
+            if(status_in){
+                console.log(" add_elems ")
+                show_elems()
+                // chrome.storage.sync.set({ads_off_toggle: (status_in)})
+                chrome.storage.sync.set({happening_toggle: (status_in) })
+            }
+            else{
+                console.log(" remove_elems ")
+                remove_elems()
+                chrome.storage.sync.set({happening_toggle: (status_in) })
+                
+            }
+        }
+        else if(message_in === "ads_off_toggle"){
+            if(status_in){
+                remove_ads()
+                console.log(" remove_ads ")
+                chrome.storage.sync.set({ads_off_toggle: (status_in)})
+            }
+            else{
+                console.log(" place_ads")
+                place_ads()
+                // chrome.storage.sync.set({happening_toggle: (status_in) })
+                chrome.storage.sync.set({ads_off_toggle: (status_in)})
+            }
+        }
+
+    }
+    catch(error){
+        console.log("Something went wrong ... " + error)
+    }
+})
+
 
 run()
 

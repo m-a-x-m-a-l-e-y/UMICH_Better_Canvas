@@ -1,28 +1,75 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-    // toggle_happening = document.querySelector("#toggle-happening")
-    // toggle_happening.addEventListener()
-
-    // // Settings map to know which settings already have stored values and what those values are
-    //     settings_map = new Map()
-    //     settings_map.set("happening_setting", "")
-    //     settings_map.set("no_ads_setting", "")
-    // //
-
-    // // chrome.storage.local.get(["happening_setting"], (result))
 
 
-    // toggle_happening.addEventListener('change' , () => {
-    //     chrome.local
+async function settings(){
+    console.log("WORKING")
+    happening_toggle = document.querySelector('#toggle-happening')
+    ads_off_toggle = document.querySelector('#toggle-ads')
+
+    // get chrome storage settings 
+    // await chrome.storage.sync.get(["ads_off_toggle"]).then((result)=>{
+    //     console.log("111Walalalala")
+    //     ads_off_toggle.checked = result;
+    // }).catch((error) =>{
+    //     console.log("ERROR IN GETTING SETITNG "  + error)
+    //     ads_off_toggle.checked = false 
     // })
+    // await chrome.storage.local.get(["happening_toggle"]).then((result)=>{
+    //     console.log("Walalalala")
+    //     happening_toggle.checked = result.ads_off_toggle || false;
+    // }).catch((error) =>{
+    //     console.log("ERROR IN GETTING SETITNG "  + error)
+    //     happening_toggle.checked = false 
+    // })  
+
+    // const {happening_toggle, ads_off_toggle} = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"])
+    const { 
+        happening_toggle: isHappening, 
+        ads_off_toggle: adsDisabled 
+    } = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
+    happening_toggle.checked =  isHappening
+    ads_off_toggle.checked = adsDisabled
 
 
 
+    happening_toggle.addEventListener('change', () => {
+        chrome.storage.sync.set({happening_toggle: (happening_toggle.checked) }).then((result)=> {
+            console.log("value set to "  + happening_toggle.checked)
+        }).catch((error)=> {"error :  "+ error})
+        
 
+        send_message_to_current_tab("happening_toggle", happening_toggle.checked)
+        
+    })
 
+    ads_off_toggle.addEventListener('change', () => {
+        send_message_to_current_tab("ads_off_toggle", ads_off_toggle.checked)
+        chrome.storage.sync.set({ads_off_toggle: (ads_off_toggle.checked) }).then((result)=> {
+            console.log("value set to "  + ads_off_toggle.checked)
+        }).catch((error)=> {"error :  "+ error})
+    })
 
+    
 
+    
+}
 
+async function send_message_to_current_tab(message, checked_status){
 
+    try{
+        const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow : true})
+        if(tab?.id){
+            await chrome.tabs.sendMessage(tab.id, {message : message, status : checked_status})
+        }
+        else{
+            console.log("Error : " + error)
+        }
+    }
+    catch (error){
+        console.log(error)
+    }
+}
+
+console.log("WORKING...")
+document.addEventListener('DOMContentLoaded', () => {
+    settings()
 })
-
