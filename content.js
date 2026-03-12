@@ -177,11 +177,13 @@ function format_time(time_in){
     return time
 }
 
-function addElems_gemini(list_of_events) {
+function addElems(list_of_events) {
     console.log("INSERTING EVENTS WIDGET");
 
+    let container = document.querySelector('#content > div:not(#dashboard)')
+    container.style.marginBottom = '40px';
+
     let targetDiv = document.querySelector('#content > div');
-    
     const eventsHtml = list_of_events.slice(0, 15).map(event => `
         <div class="umich-event-row">
             <div>
@@ -207,18 +209,12 @@ function addElems_gemini(list_of_events) {
 
     const widgetHtml = `
         <div id="umich-widget-container">
-            <div class="umich-widget-header">HAPPENING @ UMICH</div>
+            <div class="umich-widget-header">Events Happening Soon : </div>
             <div class="umich-events-list">
                 ${eventsHtml}
             </div>
         </div>
     `;
- // #content div{
-        //     display: flex;
-        //     flex-direction: row;
-        //     align-items: flex-start;
-        //     gap: 20px; /* Space between original content and your widget */
-        // }
 
     const style = document.createElement('style');
     style.innerHTML = `
@@ -242,10 +238,10 @@ function addElems_gemini(list_of_events) {
 
         /* UMich Blue Header */     
         .umich-widget-header {
-            background-color: #ffffff; /* UMich Blue */
-            color: #00274C; /* UMich Maize */
+            background-color: #1e88e5; /* UMich Blue */
+            color: rgb(229, 242, 255); /* UMich Maize */
             padding: 12px 16px;
-            // font-weight: bold;
+            font-weight: bold;
             font-size: 16px;
             text-align: center;
         }
@@ -330,13 +326,26 @@ function addElems_gemini(list_of_events) {
     targetDiv.insertAdjacentHTML('beforeend', widgetHtml);
 }
 
+function show_elems(){
+    elems = document.querySelector("#umich-widget-container")
+    events = document.querySelector("#umich-widget-container > .umich-events-list")
+    container = document.querySelector('#content > div:not(#dashboard)')
+    if (elems) {
+            elems.style.display = 'inline';
+            events.style.display = 'flex'; 
+        }
+    if(container.style.display === 'none'){
+        container.style.display = 'flex'
+        }
+}
+
 function remove_elems(){
     elems = document.querySelector("#umich-widget-container")
     container = document.querySelector('#content > div:not(#dashboard)')
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
 
     if (elems) {
-        elems.style.display = 'none'; // Just hide it
+        elems.style.display = 'none'; // 
         console.log("elems hidden");
     }
 
@@ -345,19 +354,17 @@ function remove_elems(){
     }
 }
 
-function show_elems(){
-    elems = document.querySelector("#umich-widget-container")
+function show_ads(){
+    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
     container = document.querySelector('#content > div:not(#dashboard)')
-
     if(container.style.display === 'none'){
             container.style.display = 'flex'
         }
-    if (elems) {
-        elems.style.display = 'flex'; // Just hide it
-        console.log("elems hidden");
+
+    if (adbox) {
+        adbox.style.display = 'block';
+        console.log("Ads hidden");
     }
-    
-    
 }
 
 function remove_ads(){
@@ -375,39 +382,24 @@ function remove_ads(){
 
 
 }
-function place_ads(){
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    container = document.querySelector('#content > div:not(#dashboard)')
-    if(container.style.display === 'none'){
-            container.style.display = 'flex'
-        }
-
-    if (adbox) {
-        adbox.style.display = 'block';
-        console.log("Ads hidden");
-    }
-    
-    
-}
 
 async function get_settings(){
+    // get_settings() pulls chrome storage saved setetings
     try {
-        // Must match the .sync call in the popup
         const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
         
         return {
             happening_option: result.happening_toggle ,
             no_ads_option: result.ads_off_toggle 
         };
-    } catch (e) {
-        console.error("Cloud storage error:", e);
+    } catch (error) {
+        console.error("Cloud storage error:", error);
         return { happening_option: true, no_ads_option: true };
     }
 }
 
-
 async function run(){
-    // time handling things
+    // V : 1.0 Code
     today_UTC = new Date();
     offset = today_UTC.getTimezoneOffset() * 60 * 1000;
     estDate = new Date(today_UTC.getTime() - offset);
@@ -419,7 +411,7 @@ async function run(){
     add_libraries()
     const info_json = await fetch_request()
     events_list = parse(info_json)
-    addElems_gemini(events_list)
+    addElems(events_list)
     
     if(no_ads_option){
         console.log("removing ads")
@@ -429,13 +421,17 @@ async function run(){
         console.log("removing elements")
         remove_elems()
     }
+    // End of V : 1.0 
+
+
+
 }
 
 
-
-
+// Runtime listener is listening for changes happening after the extension is loaded
+// This message is sent from the toggles in the UMich Canvas + settings menu
 chrome.runtime.onMessage.addListener((result)=>{
-
+    
     const {message: message_in, status: status_in} = result
 
     try{
@@ -461,15 +457,14 @@ chrome.runtime.onMessage.addListener((result)=>{
             }
             else{
                 console.log(" place_ads")
-                place_ads()
-                // chrome.storage.sync.set({happening_toggle: (status_in) })
+                show_ads()
                 chrome.storage.sync.set({ads_off_toggle: (status_in)})
             }
         }
 
     }
     catch(error){
-        console.log("Something went wrong ... " + error)
+        console.log("ERROR IN RECEIVING RUNTIME MESSAGE " + error)
     }
 })
 

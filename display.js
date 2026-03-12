@@ -4,24 +4,7 @@ async function settings(){
     console.log("WORKING")
     happening_toggle = document.querySelector('#toggle-happening')
     ads_off_toggle = document.querySelector('#toggle-ads')
-
     // get chrome storage settings 
-    // await chrome.storage.sync.get(["ads_off_toggle"]).then((result)=>{
-    //     console.log("111Walalalala")
-    //     ads_off_toggle.checked = result;
-    // }).catch((error) =>{
-    //     console.log("ERROR IN GETTING SETITNG "  + error)
-    //     ads_off_toggle.checked = false 
-    // })
-    // await chrome.storage.local.get(["happening_toggle"]).then((result)=>{
-    //     console.log("Walalalala")
-    //     happening_toggle.checked = result.ads_off_toggle || false;
-    // }).catch((error) =>{
-    //     console.log("ERROR IN GETTING SETITNG "  + error)
-    //     happening_toggle.checked = false 
-    // })  
-
-    // const {happening_toggle, ads_off_toggle} = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"])
     const { 
         happening_toggle: isHappening, 
         ads_off_toggle: adsDisabled 

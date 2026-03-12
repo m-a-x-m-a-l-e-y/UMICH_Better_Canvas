@@ -7,12 +7,18 @@
     "https://maizepages.umich.edu/",
     "https://umich.instructure.com/"
   ],
+  "icons": {
+    "48": "48.png",
+    "128": "128.png"
+  },
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Click to open popup"
+    "default_title": "Click to open popup",
+    "default_icon": "48.png"
+
   },
   "content_scripts": [
     {
@@ -20,4 +26,5 @@
       "js": ["eventClass.js", "content.js", "options.js"]
     }
   ]
+  
 }
