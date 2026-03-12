@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Umich-Happenings",
+  "name": "UMich Canvas +",
   "version": "1.0",
-  "permissions": ["storage","tabs","activeTab"],
+  "permissions": ["storage","activeTab"],
   "host_permissions": [
-    "https://maizepages.umich.edu/",
-    "https://umich.instructure.com/"
+    "https://maizepages.umich.edu/" 
   ],
   "icons": {
     "48": "48.png",
