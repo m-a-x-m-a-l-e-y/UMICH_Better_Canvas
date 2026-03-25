@@ -382,7 +382,7 @@ async function run(){
         estDate = new Date(today_UTC.getTime() - offset);
         today_usable = estDate.toISOString().substring(0,10);
         console.log(today_usable);
-
+        
         const { happening_option, no_ads_option } = await get_settings();
         console.log(happening_option + "   " +  no_ads_option)
         add_libraries()
@@ -390,6 +390,7 @@ async function run(){
         // V 1.1 Sports Events
         // const info_json_sports = await fetch_request_sports_events()
         //
+        console.log("Passes fetch_request")
         events_list = parse(info_json_happening)
         add_elems_happening(events_list)
         
@@ -403,7 +404,7 @@ async function run(){
         }
     }
     catch (error){
-        console.log("error in settings likely " + error)
+        console.log("error in something likely " + error)
     }
     // End of V : 1.0 
 
@@ -416,8 +417,9 @@ async function run(){
 // This message is sent from the toggles in the UMich Canvas + settings menu
 chrome.runtime.onMessage.addListener((result)=>{
     
-    const {message: message_in, status: status_in} = result
 
+    const {message: message_in, status: status_in} = result
+    if (!result || typeof result !== 'object' || !result.message) return;
     try{
         if(message_in === "happening_toggle"){
             if(status_in){
