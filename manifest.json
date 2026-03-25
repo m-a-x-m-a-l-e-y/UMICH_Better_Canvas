@@ -12,6 +12,7 @@
   },
   "background": {
     "service_worker": "background.js"
+    
   },
   "action": {
     "default_popup": "popup.html",
@@ -22,7 +23,7 @@
   "content_scripts": [
     {
       "matches": ["https://umich.instructure.com/"],
-      "js": ["eventClass.js", "content.js", "options.js"]
+      "js": ["eventClass.js", "content.js"]
     }
   ]
   

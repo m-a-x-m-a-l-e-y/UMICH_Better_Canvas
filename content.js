@@ -1,9 +1,5 @@
 // Happening Today UMICH Extension
-// 
 
-// IMPORTS
-
-//
 
 function add_libraries(){
     let header = document.querySelector('head')
@@ -11,27 +7,49 @@ function add_libraries(){
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"> 
         `)
 }
-function fetch_request(){
+function fetch_request_happening_events(){
     // This returns a promise for the fetch request, which allows us to wait for this function
     // Message is sent, which background.js checks if string matches
     // Then sends back an object 'response'. 
     // response has 2 elements : boolean 'response.success' and json object 'response.json' [or response.error if something went wrong]
 
     return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(("maize pages data request"), (response) => 
+    chrome.runtime.sendMessage(("maize pages happening data request"), (response) => 
     {
         if(response && response.success){
-            console.log("Successfully got event data lalalalal")
+            console.log("Successfully got event data")
             console.log(response.json)
             resolve(response.json)
         }
         else{
-            console.log("Something went wrong" + response?.error)
+            console.log("Something went wrong with happening data" + response?.error)
             reject(response?.error)
         }
     })
     })
 }
+
+// function fetch_request_sports_events(){
+//     // This returns a promise for the fetch request, which allows us to wait for this function
+//     // Message is sent, which background.js checks if string matches
+//     // Then sends back an object 'response'. 
+//     // response has 2 elements : boolean 'response.success' and json object 'response.json' [or response.error if something went wrong]
+//     return new Promise((resolve, reject) => {
+//     chrome.runtime.sendMessage(("sports data request"), (response) => 
+//     {
+//         if(response && response.success){
+//             console.log("Successfully got sports data")
+//             console.log(response.json)
+//             resolve(response.json)
+//         }
+//         else{
+//             console.log("Something went wrong with sports data" + response?.error)
+//             reject(response?.error)
+//         }
+//     })
+//     })
+// }
+
 function sort_events(rawEventsArray){
     // Sorts by time which is fine to sort by string because month # is the first differentiator
     //
@@ -74,59 +92,7 @@ function parse(json_info){
     console.log(eventArray);
     return eventArray;
 }
-// function addElems(list_of_events) {
-//     console.log("INSERTINGGGGG")
 
-//     // Adds each event to extension div next to the top images carousel
-//         inner_events_html = ''
-//         for (_event in list_of_events){
-            
-
-//             events += `<div class = event_and_time>
-//                             <div class = "time"> $</div>
-//                             <div class = "event" ></div>
-//                        </div>`;
-//         }
-
-
-
-//         targetDiv.insertAdjacentHTML('beforeend', html_insert);
-//     //
-
-//     // Container Styles 
-//         targetDiv.style.display = 'flex';
-//         targetDiv.style.flexDirection = 'row';
-//         targetDiv.style.alignItems = 'flex-start';
-//         targetDiv.style.backgroundColor = 'red';
-//         targetDiv.style.padding = '20px';
-//         targetDiv.style.height = '200px'
-
-//     //
-
-//     // Our Extension's Div Styles
-//         let happening_div = document.querySelector('#content > div > div')
-//         happening_div.style.display = 'flex';
-//         happening_div.style.padding = '10px';
-//         happening_div.style.backgroundColor = 'white';
-//         happening_div.style.width = '400px';
-//         happening_div.style.height = '175px';
-//         happening_div.style.marginLeft = '75px';
-//         happening_div.style.alignItems = 'center';
-//         happening_div.style.justiftContent = 'center';
-//         happening_div.style.border = '1px solid grey';
-//         happening_div.style.borderRadius = '10px';
-
-        
-//     //
-//     console.log(happening_div)
-//     table= happening_div.querySelector('table')
-//     table.style.backgroundColor = 'yellow'
-//     table.style.height = '100px'
-
-//     rows = table.querySelectorAll('tr')
-//     rows.style.height = '15px'
-//     rows.style.fontFamily = '10px'
-// }
 function format_date(time_in){
     return time_in.slice(0,10)
 }
@@ -177,7 +143,7 @@ function format_time(time_in){
     return time
 }
 
-function addElems(list_of_events) {
+function add_elems_happening(list_of_events) {
     console.log("INSERTING EVENTS WIDGET");
 
     let container = document.querySelector('#content > div:not(#dashboard)')
@@ -326,7 +292,17 @@ function addElems(list_of_events) {
     targetDiv.insertAdjacentHTML('beforeend', widgetHtml);
 }
 
-function show_elems(){
+// function  add_elems_UM_sports(){
+    
+    
+// }
+
+// function addElemsDining(){
+    
+    
+// }
+
+function show_elems_happening(){
     elems = document.querySelector("#umich-widget-container")
     events = document.querySelector("#umich-widget-container > .umich-events-list")
     container = document.querySelector('#content > div:not(#dashboard)')
@@ -339,7 +315,7 @@ function show_elems(){
         }
 }
 
-function remove_elems(){
+function hide_elems_happening(){
     elems = document.querySelector("#umich-widget-container")
     container = document.querySelector('#content > div:not(#dashboard)')
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
@@ -367,7 +343,7 @@ function show_ads(){
     }
 }
 
-function remove_ads(){
+function hide_ads(){
     adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
     container = document.querySelector('#content > div:not(#dashboard)')
     elems = document.querySelector("#umich-widget-container")
@@ -389,8 +365,8 @@ async function get_settings(){
         const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
         
         return {
-            happening_option: result.happening_toggle ,
-            no_ads_option: result.ads_off_toggle 
+            happening_option: result.happening_toggle ?? true,
+            no_ads_option: result.ads_off_toggle ?? false
         };
     } catch (error) {
         console.error("Cloud storage error:", error);
@@ -400,26 +376,34 @@ async function get_settings(){
 
 async function run(){
     // V : 1.0 Code
-    today_UTC = new Date();
-    offset = today_UTC.getTimezoneOffset() * 60 * 1000;
-    estDate = new Date(today_UTC.getTime() - offset);
-    today_usable = estDate.toISOString().substring(0,10);
-    console.log(today_usable);
+    try {
+        today_UTC = new Date();
+        offset = today_UTC.getTimezoneOffset() * 60 * 1000;
+        estDate = new Date(today_UTC.getTime() - offset);
+        today_usable = estDate.toISOString().substring(0,10);
+        console.log(today_usable);
 
-    const { happening_option, no_ads_option } = await get_settings();
-    console.log(happening_option + "   " +  no_ads_option)
-    add_libraries()
-    const info_json = await fetch_request()
-    events_list = parse(info_json)
-    addElems(events_list)
-    
-    if(no_ads_option){
-        console.log("removing ads")
-        remove_ads()
+        const { happening_option, no_ads_option } = await get_settings();
+        console.log(happening_option + "   " +  no_ads_option)
+        add_libraries()
+        const info_json_happening = await fetch_request_happening_events()
+        // V 1.1 Sports Events
+        // const info_json_sports = await fetch_request_sports_events()
+        //
+        events_list = parse(info_json_happening)
+        add_elems_happening(events_list)
+        
+        if(no_ads_option){
+            console.log("removing ads")
+            hide_ads()
+        }
+        if(!happening_option){
+            console.log("removing elements")
+            hide_elems_happening()
+        }
     }
-    if(!happening_option){
-        console.log("removing elements")
-        remove_elems()
+    catch (error){
+        console.log("error in settings likely " + error)
     }
     // End of V : 1.0 
 
@@ -438,20 +422,20 @@ chrome.runtime.onMessage.addListener((result)=>{
         if(message_in === "happening_toggle"){
             if(status_in){
                 console.log(" add_elems ")
-                show_elems()
+                show_elems_happening()
                 // chrome.storage.sync.set({ads_off_toggle: (status_in)})
                 chrome.storage.sync.set({happening_toggle: (status_in) })
             }
             else{
                 console.log(" remove_elems ")
-                remove_elems()
+                hide_elems_happening()
                 chrome.storage.sync.set({happening_toggle: (status_in) })
                 
             }
         }
         else if(message_in === "ads_off_toggle"){
             if(status_in){
-                remove_ads()
+                hide_ads()
                 console.log(" remove_ads ")
                 chrome.storage.sync.set({ads_off_toggle: (status_in)})
             }
