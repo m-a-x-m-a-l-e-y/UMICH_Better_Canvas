@@ -4,7 +4,8 @@
   "version": "1.0",
   "permissions": ["storage","activeTab"],
   "host_permissions": [
-    "https://maizepages.umich.edu/" 
+    "https://maizepages.umich.edu/",
+    "https://lvtiodrkrmergoo2cgdao73n2i0sdyuy.lambda-url.us-east-2.on.aws/*" 
   ],
   "icons": {
     "48": "48.png",
@@ -24,7 +25,7 @@
   "content_scripts": [
     {
       "matches": ["https://umich.instructure.com/"],
-      "js": ["eventClass.js", "content.js"]
+      "js": ["eventClass.js", "content.js" , "sportsClass.js"]
     }
   ]
   

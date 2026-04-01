@@ -2,16 +2,22 @@
 
 async function settings(){
     console.log("WORKING")
+    //find buttons by id
     happening_toggle = document.querySelector('#toggle-happening')
     ads_off_toggle = document.querySelector('#toggle-ads')
+    sports_toggle = document.querySelector('#toggle-sports')
+
     // get chrome storage settings 
     const { 
-        happening_toggle: isHappening, 
-        ads_off_toggle: adsDisabled 
+        happening_toggle: isHappening = true, 
+        ads_off_toggle: adsDisabled = true,
+        sports_toggle: isSports = true
     } = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
-    happening_toggle.checked =  isHappening
-    ads_off_toggle.checked = adsDisabled
 
+    //set toggles in pop up to appropriate values
+    happening_toggle.checked =  isHappening;
+    ads_off_toggle.checked = adsDisabled;
+    sports_toggle.checked = isSports;
 
 
     happening_toggle.addEventListener('change', () => {
