@@ -17,8 +17,8 @@ function fetch_request_happening_events(){
     chrome.runtime.sendMessage(("maize pages happening data request"), (response) => 
     {
         if(response && response.success){
-            console.log("Successfully got event data")
-            console.log(response.json)
+            console.log("Successfully got event data") // console.log(response.json)
+            
             resolve(response.json)
         }
         else{
@@ -34,12 +34,13 @@ function fetch_request_sports_events(){
     // Message is sent, which background.js checks if string matches
     // Then sends back an object 'response'. 
     // response has 2 elements : boolean 'response.success' and json object 'response.json' [or response.error if something went wrong]
+
     return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(("sports data request"), (response) => 
     {
         if(response && response.success){
-            console.log("Successfully got sports data")
-            console.log(response.json)
+            console.log("Successfully got sports data") // console.log(response.json)
+            
             resolve(response.json)
         }
         else{
@@ -48,23 +49,18 @@ function fetch_request_sports_events(){
         }
     })
     })
-    // return [
-    //         ];
+
 }
 
 function sort_events(rawEventsArray){
     // Sorts by time which is fine to sort by string because month # is the first differentiator
-    //
-    // | NOTE : This sorts by strings but does so correctly because year [represented as numbers] comes before
-    //  months, which allows us to sort purely by string value |
+    // NOTE : This sorts by strings but does so correctly because year [represented as numbers] comes before
+    // months, which allows us to sort purely by string value |
     rawEventsArray.sort((a, b) => a.time - b.time);
-    console.log(rawEventsArray);
     return rawEventsArray;
 }
 function parse_happening(json_info){
     // turns json object into a sorted list of events
-    console.log("AAAAAAAAA")
-    console.log(json_info)
     const AMOUNT_EVENTS_AVAILABLE = 15;
     let eventArray = [];
 
@@ -73,7 +69,6 @@ function parse_happening(json_info){
     for(i = 0; i < AMOUNT_EVENTS_AVAILABLE; i++) {
         const eventDate = new Date(json_info.value[i].startsOn)
         if(eventDate >= now) {
-            console.log('i :'  + i )
             _event = new Event(
                 json_info.value[i].name,
                 json_info.value[i].organizationName,
@@ -83,21 +78,17 @@ function parse_happening(json_info){
                 json_info.value[i].location,
                 `https://maizepages.umich.edu/event/${json_info.value[i].id}`
             );
-            //console.log('gcal link:')
-            //console.log(_event.gcal);
+
             eventArray.push(_event);
         }
     }
 
     //sort eventArray by date
     eventArray.sort((a, b) => new Date(a.time) - new Date(b.time));
-    console.log(eventArray);
     return eventArray;
 }
 function parse_sports(json_info) {
     // turns json array into a sorted list of sport events
-    console.log("parse_sports called");
-    console.log(json_info);
  
     let sportsArray = [];
  
@@ -106,7 +97,6 @@ function parse_sports(json_info) {
     for (let i = 0; i < json_info.length; i++) {
         const eventDate = new Date(json_info[i].datetime);
         if (eventDate >= now) {
-            console.log('i: ' + i);
             const _sport = new Sport(
                 json_info[i]["Event Number"],
                 json_info[i]["Event Type"],
@@ -122,7 +112,6 @@ function parse_sports(json_info) {
  
     // sort sportsArray by date
     sportsArray.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-    console.log(sportsArray);
     return sportsArray;
 }
 
@@ -177,7 +166,6 @@ function format_time(time_in){
 }
 
 function add_elems_happening(list_of_events) {
-    console.log("INSERTING EVENTS WIDGET");
 
     let container = document.querySelector('#content > div:not(#dashboard)')
     container.style.marginBottom = '40px';
@@ -207,7 +195,7 @@ function add_elems_happening(list_of_events) {
     `).join('');
 
     const widgetHtml = `
-        <div id="umich-widget-container">
+        <div id="umich-happening">
             <div class="umich-widget-header">Events Happening Soon : </div>
             <div class="umich-events-list">
                 ${eventsHtml}
@@ -325,7 +313,6 @@ function add_elems_happening(list_of_events) {
     targetDiv.insertAdjacentHTML('beforeend', widgetHtml);
 }
 function  add_elems_UM_sports(list_of_events) {
-    console.log("INSERTING EVENTS WIDGET");
 
     let container = document.querySelector('#content > div:not(#dashboard)')
     container.style.marginBottom = '40px';
@@ -355,7 +342,7 @@ function  add_elems_UM_sports(list_of_events) {
     `).join('');
 
     const widgetHtml = `
-        <div id="umich-widget-container">
+        <div id="umich-sports">
             <div class="umich-widget-header">UMICH Sports : </div>
             <div class="umich-events-list">
                 ${eventsHtml}
@@ -479,114 +466,107 @@ function  add_elems_UM_sports(list_of_events) {
 // }
 
 function show_elems_happening(){
-    elems = document.querySelector("#umich-widget-container")
-    events = document.querySelector("#umich-widget-container > .umich-events-list")
-    container = document.querySelector('#content > div:not(#dashboard)')
+    let elems = document.querySelector("#umich-happening")
+
     if (elems) {
             elems.style.display = 'inline';
             events.style.display = 'flex'; 
-        }
-    if(container.style.display === 'none'){
-        container.style.display = 'flex'
-        }
+    }
+
 }
 
 function hide_elems_happening(){
-    elems = document.querySelector("#umich-widget-container")
-    container = document.querySelector('#content > div:not(#dashboard)')
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    let elems = document.querySelector("#umich-happening");
 
     if (elems) {
         elems.style.display = 'none'; // 
-        console.log("elems hidden");
-    }
+    }   
 
-    if(adbox.style.display === 'none'){
-        container.style.display = 'none'
+}
+function show_sports(){
+    let elems = document.querySelector("#umich-sports")
+
+    if (elems) {
+            elems.style.display = 'inline';
+            events.style.display = 'flex';        
+    }
+}
+function hide_sports(){
+    let elems = document.querySelector("#umich-sports");
+
+    if (elems) {
+        elems.style.display = 'none'; 
     }
 }
 
 function show_ads(){
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    container = document.querySelector('#content > div:not(#dashboard)')
-    if(container.style.display === 'none'){
-            container.style.display = 'flex'
-        }
+    let adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
 
     if (adbox) {
         adbox.style.display = 'block';
-        console.log("Ads hidden");
     }
 }
 
 function hide_ads(){
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    container = document.querySelector('#content > div:not(#dashboard)')
-    elems = document.querySelector("#umich-widget-container")
+    let adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+
     if (adbox) {
         adbox.style.display = 'none'; // Just hide it
-        console.log("Ads hidden");
     }
-    
-    if(elems.style.display === 'none'){
-        container.style.display = 'none'
-    }
-
 
 }
 
 async function get_settings(){
     // get_settings() pulls chrome storage saved setetings
     try {
-        const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
+        const result = await chrome.storage.sync.get(["happening_toggle","ads_off_toggle","sports_toggle"]);
         
         return {
             happening_option: result.happening_toggle ?? true,
-            no_ads_option: result.ads_off_toggle ?? false
+            no_ads_option: result.ads_off_toggle ?? false,
+            sports_option: result.sports_toggle ?? true
+            
         };
     } catch (error) {
         console.error("Cloud storage error:", error);
-        return { happening_option: true, no_ads_option: true };
+        return { happening_option: true, no_ads_option: true, sports_option:true };
     }
 }
 
 async function run(){
-    // V : 1.1 Code
+    // V 1.2 : Sports Events
     try {
-        today_UTC = new Date();
-        offset = today_UTC.getTimezoneOffset() * 60 * 1000;
-        estDate = new Date(today_UTC.getTime() - offset);
-        today_usable = estDate.toISOString().substring(0,10);
-        console.log(today_usable);
+        let today_UTC = new Date();
+        let offset = today_UTC.getTimezoneOffset() * 60 * 1000;
+        let estDate = new Date(today_UTC.getTime() - offset);
+        let today_usable = estDate.toISOString().substring(0,10);
         
-        const { happening_option, no_ads_option } = await get_settings();
-        console.log(happening_option + "   " +  no_ads_option)
+        const { happening_option, no_ads_option , sports_option} = await get_settings();
+        
         add_libraries()
         const info_json_happening = await fetch_request_happening_events()
         const info_json_sports = await fetch_request_sports_events()
-        //
-        console.log("Passes fetch_request")
         // Parsing
-        events_list = parse_happening(info_json_happening)
-        sports_list = parse_sports(info_json_sports)
+        let events_list = parse_happening(info_json_happening)
+        let sports_list = parse_sports(info_json_sports)
 
         add_elems_happening(events_list)
         add_elems_UM_sports(sports_list)
-        print(sports_list)
 
         if(no_ads_option){
-            console.log("removing ads")
             hide_ads()
         }
         if(!happening_option){
-            console.log("removing elements")
             hide_elems_happening()
+        }
+        if(!sports_option){
+            hide_sports()
         }
     }
     catch (error){
         console.log("error in something likely " + error)
     }
-    // End of V : 1.1
+    //
 
 
 
@@ -603,13 +583,11 @@ chrome.runtime.onMessage.addListener((result)=>{
     try{
         if(message_in === "happening_toggle"){
             if(status_in){
-                console.log(" add_elems ")
                 show_elems_happening()
                 // chrome.storage.sync.set({ads_off_toggle: (status_in)})
                 chrome.storage.sync.set({happening_toggle: (status_in) })
             }
             else{
-                console.log(" remove_elems ")
                 hide_elems_happening()
                 chrome.storage.sync.set({happening_toggle: (status_in) })
                 
@@ -618,24 +596,20 @@ chrome.runtime.onMessage.addListener((result)=>{
         else if(message_in === "ads_off_toggle"){
             if(status_in){
                 hide_ads()
-                console.log(" remove_ads ")
                 chrome.storage.sync.set({ads_off_toggle: (status_in)})
             }
             else{
-                console.log(" place_ads")
                 show_ads()
                 chrome.storage.sync.set({ads_off_toggle: (status_in)})
             }
         }
         else if(message_in === "sports_toggle"){
             if(status_in){
-                hide_sports()
-                console.log(" sports_toggle ")
+                show_sports()
                 chrome.storage.sync.set({sports_toggle: (status_in)})
             }
             else{
-                console.log(" sports_toggle")
-                show_sports()
+                hide_sports()
                 chrome.storage.sync.set({sports_toggle: (status_in)})
             }
         }

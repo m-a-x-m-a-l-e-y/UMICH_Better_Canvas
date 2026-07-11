@@ -12,7 +12,7 @@ async function settings(){
         happening_toggle: isHappening = true, 
         ads_off_toggle: adsDisabled = true,
         sports_toggle: isSports = true
-    } = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
+    } = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle", "sports_toggle"]);
 
     //set toggles in pop up to appropriate values
     happening_toggle.checked =  isHappening;
@@ -24,9 +24,17 @@ async function settings(){
         chrome.storage.sync.set({happening_toggle: (happening_toggle.checked) }).then((result)=> {
             console.log("value set to "  + happening_toggle.checked)
         }).catch((error)=> {"error :  "+ error})
+    
+        send_message_to_current_tab("happening_toggle", happening_toggle.checked)
+    })
+
+    sports_toggle.addEventListener('change', () => {
+        chrome.storage.sync.set({sports_toggle: (sports_toggle.checked) }).then((result)=> {
+            console.log("value set to "  + sports_toggle.checked)
+        }).catch((error)=> {"error :  "+ error})
         
 
-        send_message_to_current_tab("happening_toggle", happening_toggle.checked)
+        send_message_to_current_tab("sports_toggle", sports_toggle.checked)
         
     })
 
