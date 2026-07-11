@@ -207,7 +207,7 @@ function add_elems_happening(list_of_events) {
     `).join('');
 
     const widgetHtml = `
-        <div id="umich-widget-container">
+        <div id="umich-happening">
             <div class="umich-widget-header">Events Happening Soon : </div>
             <div class="umich-events-list">
                 ${eventsHtml}
@@ -355,7 +355,7 @@ function  add_elems_UM_sports(list_of_events) {
     `).join('');
 
     const widgetHtml = `
-        <div id="umich-widget-container">
+        <div id="umich-sports">
             <div class="umich-widget-header">UMICH Sports : </div>
             <div class="umich-events-list">
                 ${eventsHtml}
@@ -479,39 +479,59 @@ function  add_elems_UM_sports(list_of_events) {
 // }
 
 function show_elems_happening(){
-    elems = document.querySelector("#umich-widget-container")
-    events = document.querySelector("#umich-widget-container > .umich-events-list")
-    container = document.querySelector('#content > div:not(#dashboard)')
+    let elems = document.querySelector("#umich-happening")
+    // let events = document.querySelector("#umich-happening > .umich-events-list")
+    // let container = document.querySelector('#content > div:not(#dashboard)')
     if (elems) {
             elems.style.display = 'inline';
             events.style.display = 'flex'; 
-        }
-    if(container.style.display === 'none'){
-        container.style.display = 'flex'
-        }
+    }
+    // if(container.style.display === 'none'){
+    //     container.style.display = 'flex'
+    //     }
 }
 
 function hide_elems_happening(){
-    elems = document.querySelector("#umich-widget-container")
-    container = document.querySelector('#content > div:not(#dashboard)')
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    let elems = document.querySelector("#umich-happening")
+    // let container = document.querySelector('#content > div:not(#dashboard)')
+    // let happening_box = document.querySelector('#content > div:not(#dashboard) > iframe')
+
+    if (elems) {
+        elems.style.display = 'none'; // 
+        console.log("elems hidden");
+    }   
+
+    // if(happening_box.style.display === 'none'){
+    //     container.style.display = 'none'
+    // }
+}
+function show_sports(){
+    let elems = document.querySelector("#umich-sports")
+    // let container = document.querySelector('#content > div:not(#dashboard)')
+    // let sports = document.querySelector('#content > div:not(#dashboard) > iframe')
+    if (elems) {
+            elems.style.display = 'inline';
+            events.style.display = 'flex';        
+    }
+    console.log('sports shown')
+}
+function hide_sports(){
+    let elems = document.querySelector("#umich-sports")
+    // let container = document.querySelector('#content > div:not(#dashboard)')
+    // let happening_box = document.querySelector('#content > div:not(#dashboard) > iframe')
 
     if (elems) {
         elems.style.display = 'none'; // 
         console.log("elems hidden");
     }
-
-    if(adbox.style.display === 'none'){
-        container.style.display = 'none'
-    }
 }
 
 function show_ads(){
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    container = document.querySelector('#content > div:not(#dashboard)')
-    if(container.style.display === 'none'){
-            container.style.display = 'flex'
-        }
+    let adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    // let container = document.querySelector('#content > div:not(#dashboard)')
+    // if(container.style.display === 'none'){
+    //         container.style.display = 'flex'
+    //     }
 
     if (adbox) {
         adbox.style.display = 'block';
@@ -520,17 +540,17 @@ function show_ads(){
 }
 
 function hide_ads(){
-    adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
-    container = document.querySelector('#content > div:not(#dashboard)')
-    elems = document.querySelector("#umich-widget-container")
+    let adbox = document.querySelector('#content > div:not(#dashboard) > iframe')
+    // let container = document.querySelector('#content > div:not(#dashboard)')
+    // let elems = document.querySelector("#umich-widget-container")
     if (adbox) {
         adbox.style.display = 'none'; // Just hide it
         console.log("Ads hidden");
     }
     
-    if(elems.style.display === 'none'){
-        container.style.display = 'none'
-    }
+    // if(elems.style.display === 'none'){
+    //     container.style.display = 'none'
+    // }
 
 
 }
@@ -538,28 +558,30 @@ function hide_ads(){
 async function get_settings(){
     // get_settings() pulls chrome storage saved setetings
     try {
-        const result = await chrome.storage.sync.get(["happening_toggle", "ads_off_toggle"]);
+        const result = await chrome.storage.sync.get(["happening_toggle","ads_off_toggle","sports_toggle"]);
         
         return {
             happening_option: result.happening_toggle ?? true,
-            no_ads_option: result.ads_off_toggle ?? false
+            no_ads_option: result.ads_off_toggle ?? false,
+            sports_option: result.sports_toggle ?? true
+            
         };
     } catch (error) {
         console.error("Cloud storage error:", error);
-        return { happening_option: true, no_ads_option: true };
+        return { happening_option: true, no_ads_option: true, sports_option:true };
     }
 }
 
 async function run(){
     // V : 1.1 Code
     try {
-        today_UTC = new Date();
-        offset = today_UTC.getTimezoneOffset() * 60 * 1000;
-        estDate = new Date(today_UTC.getTime() - offset);
-        today_usable = estDate.toISOString().substring(0,10);
+        let today_UTC = new Date();
+        let offset = today_UTC.getTimezoneOffset() * 60 * 1000;
+        let estDate = new Date(today_UTC.getTime() - offset);
+        let today_usable = estDate.toISOString().substring(0,10);
         console.log(today_usable);
         
-        const { happening_option, no_ads_option } = await get_settings();
+        const { happening_option, no_ads_option , sports_option} = await get_settings();
         console.log(happening_option + "   " +  no_ads_option)
         add_libraries()
         const info_json_happening = await fetch_request_happening_events()
@@ -567,12 +589,11 @@ async function run(){
         //
         console.log("Passes fetch_request")
         // Parsing
-        events_list = parse_happening(info_json_happening)
-        sports_list = parse_sports(info_json_sports)
+        let events_list = parse_happening(info_json_happening)
+        let sports_list = parse_sports(info_json_sports)
 
         add_elems_happening(events_list)
         add_elems_UM_sports(sports_list)
-        print(sports_list)
 
         if(no_ads_option){
             console.log("removing ads")
@@ -581,6 +602,10 @@ async function run(){
         if(!happening_option){
             console.log("removing elements")
             hide_elems_happening()
+        }
+        if(!sports_option){
+            console.log("removing sports")
+            hide_sports()
         }
     }
     catch (error){
@@ -629,13 +654,13 @@ chrome.runtime.onMessage.addListener((result)=>{
         }
         else if(message_in === "sports_toggle"){
             if(status_in){
-                hide_sports()
-                console.log(" sports_toggle ")
+                show_sports()
+                console.log("sports_toggle")
                 chrome.storage.sync.set({sports_toggle: (status_in)})
             }
             else{
-                console.log(" sports_toggle")
-                show_sports()
+                console.log("sports_toggle")
+                hide_sports()
                 chrome.storage.sync.set({sports_toggle: (status_in)})
             }
         }
