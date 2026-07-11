@@ -1,6 +1,7 @@
 :root {
     /* Colors derived from your icon */
-    --brand-blue: #1e88e5;
+    /* --brand-blue: #1e88e5; */
+    --brand-blue: #233e57;
     --brand-gradient: linear-gradient(135deg, #1e88e5 0%, #64b5f6 100%);
     --bg-light: #ffffff;
     --text-main: #202124;
@@ -12,7 +13,7 @@ body {
     width: 320px;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    background-color: var(--brand-blue);
+    background-color: var(--bg-light);
     color: var(--text-main);
 }
 
