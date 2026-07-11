@@ -9,15 +9,15 @@ OUT_FILE="$OUT_DIR/umich-canvas-plus-${VERSION}.zip"
 
 FILES=(
   manifest.json
-  background.js
-  content.js
-  eventClass.js
-  sportsClass.js
-  popup/popup.html
-  popup/display.js
-  popup/style.css
-  data/48.png
-  data/128.png
+  src/background.js
+  src/content.js
+  src/eventClass.js
+  src/sportsClass.js
+  src/popup/popup.html
+  src/popup/display.js
+  src/popup/style.css
+  src/data/48.png
+  src/data/128.png
 )
 
 mkdir -p "$OUT_DIR"

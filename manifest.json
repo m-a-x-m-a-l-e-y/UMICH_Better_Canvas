@@ -8,23 +8,23 @@
     "https://lvtiodrkrmergoo2cgdao73n2i0sdyuy.lambda-url.us-east-2.on.aws/*" 
   ],
   "icons": {
-    "48": "data/48.png",
-    "128": "data/128.png"
+    "48": "src/data/48.png",
+    "128": "src/data/128.png"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/background.js",
     "type": "module"
   },
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "src/popup/popup.html",
     "default_title": "Click to open popup",
-    "default_icon": "data/48.png"
+    "default_icon": "src/data/48.png"
 
   },
   "content_scripts": [
     {
       "matches": ["https://umich.instructure.com/"],
-      "js": ["eventClass.js", "content.js" , "sportsClass.js"]
+      "js": ["src/eventClass.js", "src/content.js" , "src/sportsClass.js"]
     }
   ]
   
