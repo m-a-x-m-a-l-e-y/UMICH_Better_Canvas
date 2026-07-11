@@ -1,9 +1,3 @@
-// Imports for AWS SDK are done through bundling with npx esbuild
-// import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-// import { DynamoDBDocumentClient, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-// import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
-
-
 console.log("Background Script Loaded");
 
 function generate_happening_URL() {

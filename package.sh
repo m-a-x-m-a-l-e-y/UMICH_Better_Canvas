@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bundles background.js and zips the extension into zips/<name>-<version>.zip
+# Zips the extension into zips/<name>-<version>.zip
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
@@ -9,7 +9,7 @@ OUT_FILE="$OUT_DIR/umich-canvas-plus-${VERSION}.zip"
 
 FILES=(
   manifest.json
-  background.bundle.js
+  background.js
   content.js
   eventClass.js
   sportsClass.js
@@ -19,9 +19,6 @@ FILES=(
   data/48.png
   data/128.png
 )
-
-echo "Bundling background.js -> background.bundle.js"
-npx esbuild background.js --bundle --outfile=background.bundle.js --format=esm
 
 mkdir -p "$OUT_DIR"
 rm -f "$OUT_FILE"

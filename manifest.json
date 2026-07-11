@@ -12,9 +12,8 @@
     "128": "data/128.png"
   },
   "background": {
-    "service_worker": "background.bundle.js",
+    "service_worker": "background.js",
     "type": "module"
-    
   },
   "action": {
     "default_popup": "popup/popup.html",
