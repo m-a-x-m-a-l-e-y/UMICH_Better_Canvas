@@ -4,12 +4,16 @@ A Chrome extension that enhances the University of Michigan's Canvas dashboard (
 
 ## Features
 
-- **Happening Today** — Pulls upcoming campus events from [Maize Pages](https://maizepages.umich.edu/) and displays them directly on the Canvas dashboard, with one-click "Add to Google Calendar" links.
-- **Sports Events** — Shows upcoming Michigan sports events, sourced from a companion AWS Lambda + DynamoDB backend.
-- **Remove Banners** — Hides promotional "Future" ad banners on the Canvas dashboard.
-- **Toggle Popup** — Each feature can be independently enabled or disabled from the extension's popup, with preferences synced via `chrome.storage.sync`.
+- **Happening Today** : Pulls upcoming campus events from [Maize Pages](https://maizepages.umich.edu/) and displays them directly on the Canvas dashboard, with one-click "Add to Google Calendar" links.
+- **Sports Events** : Shows upcoming Michigan sports events, sourced from a companion AWS Lambda + DynamoDB backend.
+- **Remove Banners** : Hides promotional "Future" ad banners on the Canvas dashboard.
+- **Toggle Popup** : Each feature can be independently enabled or disabled from the extension's popup, with preferences synced via `chrome.storage.sync`.
 
-## Installation (for development/testing of extension)
+# Under Development : 
+- Google Maps pathfinding for class schedule
+- Dining hall menus
+
+## Installation (for development & testing of extension)
 
 1. Clone this repository.
 2. Open `chrome://extensions` in Chrome.
