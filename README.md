@@ -16,7 +16,7 @@ A Chrome extension that enhances the University of Michigan's Canvas dashboard w
 - Google Maps pathfinding for class schedule
 - Dining hall menus
 
-## Technical Design ## 
+# Technical Design #
 
 AWS serverless architecture using AWS Lambda + DynamoDB for fetching and scraping
 
